@@ -3,6 +3,7 @@ const express = require("express")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
 const { busmodel } = require("./models/register")
+const { ksrtcmodel } = require("./models/ksrtc")
 const jwt = require("jsonwebtoken")
 
 
@@ -84,6 +85,14 @@ app.post("/view",(req,res)=>{
         }
     }
 )
+})
+
+app.post("/add",(req,res)=>{
+    let input=req.body
+    let ksrtc = new ksrtcmodel(input)
+    ksrtc.save()
+    console.log(ksrtc)
+    res.json({"status":"success"})
 })
 
 app.listen(8080,(req,res)=>{
