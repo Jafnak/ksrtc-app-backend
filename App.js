@@ -3,6 +3,7 @@ const express = require("express")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
 const { busmodel } = require("./models/register")
+const { ksrtcmodel } = require("./models/ksrtc")
 const jwt = require("jsonwebtoken")
 
 
