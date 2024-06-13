@@ -3,7 +3,7 @@ const express = require("express")
 const cors = require("cors")
 const bcrypt = require("bcryptjs")
 const { busmodel } = require("./models/register")
-const { ksrtcmodel } = require("./models/ksrtc")
+const { ksrtcmodel} = require("./models/ksrtc")
 const jwt = require("jsonwebtoken")
 
 
@@ -94,6 +94,19 @@ app.post("/add",(req,res)=>{
     console.log(ksrtc)
     res.json({"status":"success"})
 })
+
+app.post("/viewall",(req,res)=>{
+    ksrtcmodel.find().then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch(
+        (error)=>{
+            res.json(error)
+        }
+    )
+})
+
 
 app.listen(8080,(req,res)=>{
     console.log("server started")
