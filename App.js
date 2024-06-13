@@ -26,9 +26,9 @@ app.post("/signUp",async(req,res)=>{
     console.log(hashedPassword)
 
     input.password = hashedPassword     //stored the hashed password to server
-    let blog = new busmodel(input)
-    blog.save()
-    console.log(blog)
+    let bus = new busmodel(input)
+    bus.save()
+    console.log(bus)
 
     res.json({"status":"success"})
 })
@@ -45,7 +45,7 @@ app.post("/login",(req,res)=>{
             bcrypt.compare(input.password,dbPassword,(error,isMatch)=>{ //input pswd and hashed pswd is  compared
                 if (isMatch) {
                     //if login success generate token
-                    jwt.sign({email:input.email},"blog-app",{expiresIn:"1d"},
+                    jwt.sign({email:input.email},"bus-app",{expiresIn:"1d"},
                         (error,token)=>{
                             if (error) {
                                 res.json({"status":"unable to create token"})
@@ -65,6 +65,25 @@ app.post("/login",(req,res)=>{
     }
     ).catch()
   
+})
+
+app.post("/view",(req,res)=>{
+    let token = req.headers["token"]
+    jwt.verify(token,"bus-app",(error,decoded)=>{
+        if (error) {
+            res.json({"status":"unauthorized access"})
+        } else {
+            if(decoded){
+                busmodel.find().then(
+                    (response)=>{
+                        res.json(response)
+                    }
+                ).catch()
+            }
+            
+        }
+    }
+)
 })
 
 app.listen(8080,(req,res)=>{
