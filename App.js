@@ -95,6 +95,19 @@ app.post("/add",(req,res)=>{
     res.json({"status":"success"})
 })
 
+app.post("/viewall",(res,req)=>{
+    ksrtcmodel.find().then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch(
+        (error)=>{
+            res.json(error)
+        }
+    )
+})
+
+
 app.listen(8080,(req,res)=>{
     console.log("server started")
 })
