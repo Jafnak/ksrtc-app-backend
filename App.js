@@ -1,18 +1,70 @@
 const mongoose = require("mongoose")
 const express = require("express")
 const cors = require("cors")
+const bcrypt = require("bcryptjs")
 const { busmodel } = require("./models/register")
+const jwt = require("jsonwebtoken")
+
 
 const app = express()
 app.use(express.json())
 app.use(cors())
 
+
+
+mongoose.connect("mongodb+srv://Jafna02:jafna9074@cluster0.icijy.mongodb.net/RegisterDb?retryWrites=true&w=majority&appName=Cluster0")
+
+const generateHashedPassword = async(password) =>{
+    const salt = await bcrypt.genSalt(10)  //salt=cost factor value
+    return bcrypt.hash(password,salt)
+}
+
+app.post("/signUp",async(req,res)=>{
+
+    let input = req.body
+    let hashedPassword = await generateHashedPassword(input.password)
+    console.log(hashedPassword)
+
+    input.password = hashedPassword     //stored the hashed password to server
+    let blog = new busmodel(input)
+    blog.save()
+    console.log(blog)
+
+    res.json({"status":"success"})
+})
+
+
+
 app.post("/login",(req,res)=>{
     let input = req.body
-    let bus = busmodel(input)
-    bus.save()
-    console.log(bus)
-    res.json({"status":"success"})
+    busmodel.find({"email":req.body.email}).then(
+    (response)=>{
+        if(response.length > 0){
+            let dbPassword = response[0].password
+            console.log(dbPassword)
+            bcrypt.compare(input.password,dbPassword,(error,isMatch)=>{ //input pswd and hashed pswd is  compared
+                if (isMatch) {
+                    //if login success generate token
+                    jwt.sign({email:input.email},"blog-app",{expiresIn:"1d"},
+                        (error,token)=>{
+                            if (error) {
+                                res.json({"status":"unable to create token"})
+                            } else {
+                                res.json({"status":"success","userId":response[0]._id,"token":token})
+                            }
+                        }
+                    )
+                } else {
+                    res.json({"status":"incorrect"})
+                }
+            })
+            
+        } else {
+            res.json({"status":"user not found"})
+        }
+    }
+    ).catch()
+  
 })
 
 app.listen(8080,(req,res)=>{
