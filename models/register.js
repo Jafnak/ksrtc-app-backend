@@ -9,5 +9,5 @@ const schema = mongoose.Schema(
         "gender":{type:String,required:true},
     }
 )
-let busmodel = mongoose.model("buses",schema)
+let busmodel = mongoose.model("buses",schema);
 module.exports={busmodel}
