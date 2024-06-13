@@ -107,6 +107,20 @@ app.post("/viewall",(req,res)=>{
     )
 })
 
+app.post("/searchksrtc",(req,res)=>{
+    let input = req.body
+    ksrtcmodel.find(input).then(
+        (data)=>{
+            res.json(data)
+        }
+    ).catch(
+        (error)=>{
+            res.json(error)
+        }
+    )
+
+})
+
 
 app.listen(8080,(req,res)=>{
     console.log("server started")
