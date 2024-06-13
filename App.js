@@ -121,6 +121,19 @@ app.post("/searchksrtc",(req,res)=>{
 
 })
 
+app.post("/delete",(req,res)=>{
+    let input = req.body
+    ksrtcmodel.findByIdAndDelete(input._id).then(
+        (response)=>{
+            res.json({"status":"success"})
+        }
+    ).catch(
+        (error)=>{
+            res.json(error)
+        }
+    )
+})
+
 
 app.listen(8080,(req,res)=>{
     console.log("server started")
